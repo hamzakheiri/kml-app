@@ -1,0 +1,9 @@
+FROM node:lts
+
+WORKDIR /app 
+
+COPY ./script.sh .
+
+# RUN apt update && apt install -y bash
+
+ENTRYPOINT [ "sh", "script.sh" ] 

@@ -1,0 +1,59 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  a {
+    text-decoration: none;
+  }
+}
+
+.App {
+  min-width: 100vw;
+  min-height: 100vh;
+  display: flex;
+}
+
+.map-component {
+  background: #eeeeee;
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding-top: .5rem;
+}
+
+.side-section {
+  background: #dddddd;
+  flex: 1;
+  position: relative;
+  padding-top: 2rem;
+  color: #4285F4;
+  text-align: center;
+  #markers-title {
+    color: black;
+  }
+}
+
+.ctr-section {
+  display: flex;
+  gap: 2rem;
+}
+
+.markers-list{
+  padding:1rem;
+  margin-bottom: .5rem;
+  text-align: left;
+}
+
+.main-map {
+  margin-top: 3rem;
+}
+
+
+.btn-trait {
+  position: absolute;
+  bottom: 1rem;
+  right: 10%;
+  font-size: 1.2rem;
+}

@@ -1,0 +1,24 @@
+version: "3.9"  # Specify Docker Compose version
+
+services:
+  app1:
+    build: ./App1/  # Your app1's Dockerfile location
+    networks:
+      - my-network
+  # app2:
+  #   build: ./App2  # Your app2's Dockerfile location
+  #   networks:
+  #     - my-network
+  
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"  # Expose port 80   
+    depends_on:  # Start Nginx after the apps
+      - app1
+      # - app2
+    networks:
+      - my-network
+networks:
+    my-network:
+       driver: bridge

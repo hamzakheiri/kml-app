@@ -1,0 +1,13 @@
+.map-section {
+    display: flex;
+    justify-content: center;
+    padding-top: 2rem;
+}
+
+.ctr-section {
+  margin-top: 4rem;
+  display: flex;
+  justify-content: center;
+  gap: 5rem;
+  position: relative;
+}
