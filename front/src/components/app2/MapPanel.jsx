@@ -61,7 +61,16 @@ export const MapPanel = () => {
 
   useEffect(() => {
     function addMarker(m) {
-      map.map.addSource(`marker-source-${m.name}`, {
+
+      const markerId = m.name;
+
+      if (map.markers.includes(markerId)){
+        console.error('duplicated markerId resource');
+        return;
+      }
+
+      map.addMarker(markerId);
+      map.map.addSource(`source-${m.name}`, {
         'type': 'geojson',
         'data': {
           'type': 'FeatureCollection',
@@ -73,17 +82,7 @@ export const MapPanel = () => {
                 'coordinates': [m.long, m.lat]
               },
               'properties': {
-                'title': 'Marker 1'
-              }
-            },
-            {
-              'type': 'Feature',
-              'geometry': {
-                'type': 'Point',
-                'coordinates': [m.long, m.lat]
-              },
-              'properties': {
-                'title': 'Marker 2'
+                'title': `${m.name}`,
               }
             }
           ]
@@ -92,24 +91,32 @@ export const MapPanel = () => {
 
       // Add a symbol layer to render the markers
       map.map.addLayer({
-        'id': `marker-${m.name}`,
+        'id': `layer-${m.name}`,
         'type': 'symbol',
-        'source': `marker-source-${m.name}`,
+        'source': `source-${m.name}`,
         'layout': {
           'icon-image': 'harbor-15', // Default marker icon provided by Mapbox
           'icon-size': 1.2,
           'text-field': ['get', 'title'],
           'text-offset': [0, 1.25],
-          'text-anchor': 'top'
+          'text-anchor': 'top',
+          'icon-size': 1,
+          'icon-allow-overlap': true,
+          'text-allow-overlap': true,
         }
       });
     }
-
-    if (!map.map)
+    if (!ma.map)
       return;
     console.log('new::', importMarkers);
     // console.log(importMarkers[0])
     importMarkers.forEach(addMarker);
+    if (importMarkers && importMarkers.length != 0)
+      map.map.flyTo({
+        center: [importMarkers[0].long, importMarkers[1].lat],
+        zoom: 15
+      })
+
   }, [importMarkers, map.map]);
 
 
@@ -160,7 +167,8 @@ export const MapPanel = () => {
         source: `source-${lineString.name}`,
         layout: {
           'line-join': 'round',
-          'line-cap': 'round'
+          'line-cap': 'round',
+          
         },
         paint: {
           'line-color': '#00cc00', // Blue color
@@ -187,8 +195,11 @@ export const MapPanel = () => {
       })
 
       const lineStringId = `${lineString.name}`;
-      if (map.lineStringsId.includes(lineStringId))
+
+      if (map.lineStringsId.includes(lineStringId)){
         console.error('duplicated line string recourse');
+        return;
+      }
 
       map.addLineString(lineStringId); // later
 
@@ -224,24 +235,24 @@ export const MapPanel = () => {
 
 
   async function downloadPng() {
-    
+
 
     // takeScreenshot(map.map).then(async function(data) {
-      // const blob = dataURLToBlob(data);
-      const blob = await imageData(map);
-      const formData = new FormData();
-      formData.append('file', blob, `map_screenshot${uuidv4()}.png`);
-      formData.append('aoa', aoa);
-      try {
-        const res = await axios.post('http://localhost:5000/xlsx-handler/createReport', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
-        console.log(res.data);
-      } catch (e) {
-        console.error(e);
-      }
+    // const blob = dataURLToBlob(data);
+    const blob = await imageData(map);
+    const formData = new FormData();
+    formData.append('file', blob, `map_screenshot${uuidv4()}.png`);
+    formData.append('aoa', aoa);
+    try {
+      const res = await axios.post('http://localhost:5000/xlsx-handler/createReport', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      console.log(res.data);
+    } catch (e) {
+      console.error(e);
+    }
     // });
   }
 

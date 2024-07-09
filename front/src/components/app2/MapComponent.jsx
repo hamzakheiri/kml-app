@@ -89,9 +89,11 @@ export const MapComponent = () => {
 
   function reset() {
     console.log('what the::', map.markers)
-    map.markers.forEach(m => {
-      m.remove();
-    })
+    // if (map.markers && map.markers.length != 0) {
+    //   map.markers.forEach(m => {
+    //     m.remove();
+    //   })
+    // }
 
     map.lineStringsId.forEach((id) => {
       const layerId = `layer-${id}`;
@@ -106,11 +108,29 @@ export const MapComponent = () => {
       }
     })
 
+    if (map.markers){
+      console.log('markers:', map.markers);
+      map.markers.forEach((id) => {
+        const layerId = `layer-${id}`;
+        const sourceId = `source-${id}`;
+        if (map.map.getLayer(layerId)) {
+          map.map.removeLayer(layerId);
+
+          // If the layer has a source, you might want to remove it as well
+          if (map.map.getSource(sourceId)) {
+            map.map.removeSource(sourceId);
+          }
+        }
+      })
+    }
+
+    map.resetLineStrings();
+    map.resetMarkers();
     resetInfo();
   }
 
   function zoomToRes() {
-    if (!resultLineStrings || resultLineStrings.length === 0){
+    if (!resultLineStrings || resultLineStrings.length === 0) {
       console.error('no lineString to bound');
       return;
     }

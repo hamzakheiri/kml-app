@@ -77,9 +77,10 @@ export class XlsxHandlerService {
       extension: 'png', // Or the appropriate extension for your image
     });
 
-    // Add image to sheet
-    sheet.addImage(image, {
-      tl: { col: 1, row: 10 }, // Top-left corner position
+    // Add image to sheeti
+    const sheet2 = workbook.addWorksheet('sheet2');
+    sheet2.addImage(image, {
+      tl: { col: 1, row: 1 }, // Top-left corner position
       ext: { width: 500, height: 500  }, // Set image dimensions (optional)
     });
 
@@ -98,57 +99,4 @@ export class XlsxHandlerService {
       throw new BadRequestException('bad request');
     }
   }
-
-//   async createXlsxRes(file: Express.Multer.File, body: any) {
-//     const { title, fileName, date } = body;
-//     const aoa = [];
-//     const aoaRes = body.aoa.split(',');
-//     console.log('aoa', body.aoa, 'saoa', aoa,);
-
-//     for (let i = 0; i < 7 * 3; i += 7) {
-//       aoa.push(aoaRes.slice(i, i + 7));
-//     }
-
-//     console.log('aoa', aoa, 'title', title, 'date', date);
-
-//     const XLSXPopulate = require('xlsx-populate');
-
-//     // ... Your existing code to generate aoa, title, and date variables
-
-//     XLSXPopulate.fromBlankAsync()
-//       .then(workbook => {
-//         const sheet = workbook.sheet(0);
-//         sheet.name("Sheet1");
-
-//         // Setting the title and merging the cells
-//         sheet.cell("A1").value(title);
-//         sheet.range("A1:G1").merged(true);
-
-//         // Adding date
-//         sheet.cell("G2").value(date);
-
-//         // Adding headers
-//         const headers = ['Point de départ', 'Long', 'Lat', 'Nom du Tronçon', 'Point d’arrivée', 'Long', 'Lat'];
-//         headers.forEach((header, index) => {
-//           sheet.cell(3, index + 1).value(header);
-//         });
-
-//         // Adding data from aoa
-//         aoa.forEach((row, rowIndex) => {
-//           row.forEach((cell, cellIndex) => {
-//             sheet.cell(rowIndex + 4, cellIndex + 1).value(cell);
-//           });
-//         });
-
-//         console.log('file::', file);
-//         
-//          return workbook.toFileAsync(join(__dirname, '../uploads/test.xlsx'));
-//       })
-//       .then(result => {
-//         console.log("File saved successfully!");
-//       })
-//       .catch(err => {
-//         console.error("Error generating XLSX:", err);
-//       });
-//   }
 }

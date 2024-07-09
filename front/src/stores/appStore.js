@@ -4,12 +4,12 @@ export const useMapStore = create(set => ({
   map: null,
   markers: [],
   lineStringsId: [],
+  markersId: [],
 
   setMap: (map) => set(() => ({ map: map })),
 
   addMarker: (m) => set(state => ({ markers: [...state.markers, m] })),
   resetMarkers: () => set(() => ({ markers: [] })),
-
   addLineString: (l) => set(s => ({ lineStringsId: [...s.lineStringsId, l] })),
   resetLineStrings: () => set(() => ({ lineStringsId: [] })),
 }));
