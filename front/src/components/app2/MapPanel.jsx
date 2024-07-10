@@ -38,8 +38,6 @@ export const MapPanel = () => {
     map.setMap(initial);
     // return () => { if (map) map.remove() };
   }, [map.map]);
-
-
   // useEffect(() => {
   //   if (!map.map)
   //     return;
@@ -106,7 +104,7 @@ export const MapPanel = () => {
         }
       });
     }
-    if (!ma.map)
+    if (!map.map)
       return;
     console.log('new::', importMarkers);
     // console.log(importMarkers[0])
