@@ -1,0 +1,13 @@
+FROM node:lts
+
+WORKDIR /app 
+
+COPY ./script.sh .
+
+# RUN adduser --disabled-password --gecos "" --uid ${1000} appuser
+
+RUN apt update && apt install -y bash
+
+# USER appuser
+
+ENTRYPOINT [ "bash", "script.sh" ]

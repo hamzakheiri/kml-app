@@ -1,0 +1,49 @@
+.import-component {
+  display: none;
+  position: absolute;
+  background: rgb(255, 255, 255);
+  /* display: flex; */
+  justify-content: center;
+  align-items: center;
+  /* padding: 2rem; */
+  width: 90%;
+  height: 400px;
+  top: -300px;
+  /* left: 10%; */
+  border-radius: 10px;
+  border: 1px solid rgb(42, 45, 62);
+  &.active {
+    display: flex;
+  }
+  /* &.import-active{ */
+    /* display: flex; */
+  /* } */
+}
+.import-icon {
+  box-sizing: border-box;
+  /* width: 50%; */
+  height: 50%;
+}
+
+.import-icon:hover {
+  border: 1px solid rgb(42, 45, 62); 
+  color: black; 
+  font-size: 3ch;
+  /* height: 100%; */
+}
+
+.kml-icon{
+  color: black;
+}
+
+.xlsx-icon{
+  background: rgba(255, 255, 255, 0.165);
+}
+
+.import-section {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+}

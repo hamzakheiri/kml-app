@@ -1,0 +1,21 @@
+.map-section {
+    display: flex;
+    justify-content: center;
+    padding-top: 2rem;
+}
+
+.traiting-info {
+  display: flex;
+  flex-direction: row;
+  /* background-color: white; */
+  justify-content: center;
+  width: 100%;
+}
+
+.ctr-section {
+  /* margin-top: 4rem; */
+  display: flex;
+  justify-content: center;
+  gap: 5rem;
+  position: relative;
+}

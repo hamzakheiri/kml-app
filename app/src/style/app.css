@@ -1,0 +1,21 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
+.App {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  background: #ffffff;
+}
+
+main.main-section {
+  flex-basis: 65%;
+  height: 100%;
+  background: #D0DDFF;
+}
+
+

@@ -1,0 +1,16 @@
+.search-point {
+    padding: 50px 0px 30px 20px;
+    font-family: Poppins;
+    font-weight: 300;
+    padding-left: 5%;
+    border-radius: 50px;
+    .point-coordinates {
+        display: inline-block;
+        margin-top: 10px;
+    }
+}
+
+.search-point:hover {
+    cursor: pointer;
+    background: #f1f5fe;
+}
