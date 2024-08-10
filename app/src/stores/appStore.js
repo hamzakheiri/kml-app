@@ -16,8 +16,11 @@ export const useMapStore = create(set => ({
 
 export const useGraphStore = create(set => ({
   graph: null,
+  path: null,
+
   setGraph: (g) => set(() => ({graph: g})),
-  clearGraph: () => set((s) => ({graph: s.graph.clear()})) 
+  clearGraph: () => set((s) => ({graph: s.graph.clear()})), 
+  setPath: (p) => set(() => ({path: p}))
 }))
 
 

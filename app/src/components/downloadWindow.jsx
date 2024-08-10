@@ -1,5 +1,5 @@
-import '../../style/download-window.css'
-import { TextField, Button, Typography, IconButton } from "@mui/material";
+import '../style/download-window.css'
+import { TextField, Button, Typography , IconButton} from "@mui/material";
 import { useRef, useState } from "react";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -10,19 +10,24 @@ import {
   useVisibilityStore,
   useAoaStore,
   useMapStore,
-  useDownloadStore
-} from "../../stores/appStore"
-import { imageData } from '../../utils/imageData';
+  useDownloadStore,
+  useMapInfoStore,
+  useGraphStore
+} from "../stores/appStore"
+import { imageData } from '../utils/imageData';
 import { v4 } from 'uuid';
 import axios from 'axios';
+
 import ClearIcon from '@mui/icons-material/Clear';
+import { createAoa } from '../utils/calc';
 
 export default function DownloadWindow() {
-  const { downloadWindow } = useVisibilityStore();
+  const { downloadWindow, downloadWindowToggle } = useVisibilityStore();
   const documentTitle = useRef(null);
   const fileName = useRef(null);
-  const { aoa } = useAoaStore();
   const map = useMapStore();
+  const {importMarkers} = useMapInfoStore();
+  const {graph, path} = useGraphStore(); 
   const down = useDownloadStore();
   const [date, setDate] = useState(dayjs('2021-01-01'))
   const [error, setError] = useState('');
@@ -30,7 +35,8 @@ export default function DownloadWindow() {
   const download = async () => {
     const title = documentTitle.current.value;
     const tfileName = fileName.current.value;
-
+    
+    const aoa = createAoa(graph, path, importMarkers);
     if (title === '') {
       setError('Document Title is required');
       return;
@@ -60,7 +66,7 @@ export default function DownloadWindow() {
         },
         responseType: 'blob',
       });
-      const url = window.URL.createObjectURL(new Blob([response.data], { type: response.headers['content-type'] }));
+        const url = window.URL.createObjectURL(new Blob([response.data], { type: response.headers['content-type'] }));
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', `${tfileName}.xlsx`);
@@ -68,7 +74,7 @@ export default function DownloadWindow() {
       link.click();
       link.remove();
       window.URL.revokeObjectURL(url);
-    } catch (e) {
+        } catch (e) {
       console.error(e);
     }
     if (error)
@@ -78,8 +84,8 @@ export default function DownloadWindow() {
   return (
     <div className={`download-window ${downloadWindow ? 'active' : ''}`}>
       {/* <input type='text' id="document-title"/> */}
-      <IconButton className="exit-icon" aria-label="delete">
-        <ClearIcon/>
+      <IconButton className="exit-icon" aria-label="delete" onClick={() => {downloadWindowToggle()}}>  
+        <ClearIcon/> 
       </IconButton>
       <TextField label="Document Title" variant="outlined" className='document-title' inputRef={documentTitle}></TextField>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -93,7 +99,7 @@ export default function DownloadWindow() {
       </LocalizationProvider>
       <TextField label="File Name" variant="outlined" className='document-title' inputRef={fileName}></TextField>
       <Typography variant="body2" color="error">{error}</Typography>
-      <Button variant="outlined" onClick={download}>download <ClearIcon/> </Button>
+      <Button variant="outlined" onClick={download}>download</Button>
 
     </div>)
 }

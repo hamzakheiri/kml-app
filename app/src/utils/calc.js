@@ -74,21 +74,29 @@ function calcDist(a, b, lineStrings, lineName) {
   
   const ap = turf.point(a.coor);
   const bp = turf.point(b.coor);
+  const edgeDef = [];
   const line = lineStrings.find(e => e.name === lineName).coor;
  // console.log('tar line: ', line);
   if (a.index === b.index)
-    return turf.distance(ap, bp, { units: 'kilometers' });
+    return {
+      dist: turf.distance(ap, bp, { units: 'kilometers' }),
+      edgeDef: [a.coor, b.coor]
+    };
+
   let s = a.index;
+  edgeDef.push(a.coor);
   // console.log('1:', a, '2: ', line[s]);
   let dist = turf.distance(ap, line[s], { units: 'kilometers' });
   while (s < b.index) {
     const j = turf.point(line[s]);
     const k = turf.point(line[s + 1]);
+    edgeDef.push(line[s]);
     dist += turf.distance(j, k, { units: 'kilometers' });
     s++;
   }
   dist += turf.distance(turf.point(line[s - 1]), bp, { units: 'kilometers' });
-  return dist;
+  edgeDef.push(b.coor);
+  return {dist: dist, edgeDef: edgeDef};
 }
 
 
@@ -98,8 +106,9 @@ function distMap(lineStrings, lineM, graph) {
       for (let i = 0; i < ms.length - 1; i++) {
         let cur = ms[i];
         let nex = ms[i + 1];
-        const dist = calcDist(cur, nex, lineStrings, key);
+        const {dist, edgeDef} = calcDist(cur, nex, lineStrings, key);
         graph.addEdge(cur.name, nex.name, dist, key);
+        graph.addEdgeDef(cur.name, nex.name, edgeDef);
       }
     })
  }
@@ -127,12 +136,8 @@ export function createGraph(lineStrings, lineMap, points) {
     graph.addVertex(p.name)
   })
   distMap(lineStrings, lineM, graph);
-  //graph.display();
-  console.log(graph.dijkstra('KDM-1022', 'KDM-1003'));
 
-  // console.log('point::', graph.source);
   return graph;
-  // console.log(lineM);
 };
 
 export function createXlsxAoa(info, start, end, lineStrings) {
@@ -154,6 +159,28 @@ export function createXlsxAoa(info, start, end, lineStrings) {
     used.push(nextel.name);
     el = nextel;
   }
+  return aoa;
+}
+
+export function createAoa(graph, path, imported){
+  const aoa = [];
+  let current = imported.find(e => e.name  === path[0]);
+  let next;
+
+  for (let i=0; i < path.length-1; i++){
+    next = imported.find(e => e.name === path[i+1]); 
+    aoa.push([
+      current.name,
+      current.long,
+      current.lat,
+      graph.source.get([current.name, next.name].sort().join()),
+      next.name,
+      next.long,
+      next.lat,
+    ])
+    current = next;
+  }
+  console.log(aoa);
   return aoa;
 }
 

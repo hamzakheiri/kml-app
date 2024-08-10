@@ -80,8 +80,6 @@ export default function SuggestedClients() {
             })
           }
         </div>
-        { importMarkers && importMarkers.length != 0 && 
-        <Button css="btn-trait" click={trait}> start trait </Button> }
-      </section>
+     </section>
     )
   }

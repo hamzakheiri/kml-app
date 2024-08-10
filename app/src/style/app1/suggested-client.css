@@ -12,6 +12,7 @@ section.side-section {
     font-size: 28px;
     line-height: 45px;
   }
+  max-width: 300px;
 }
 
 .search-container {

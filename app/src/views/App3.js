@@ -13,14 +13,14 @@ export default function App() {
 
   return (
     <div className="App" onClick={checkToggle}>
+           <SuggestedClients>
+
+      </SuggestedClients>
       <main className="main-section"> 
         <MapCom>
         </MapCom>
       </main>
-      <SuggestedClients>
-
-      </SuggestedClients>
-      
+ 
    </div>
   );
 }

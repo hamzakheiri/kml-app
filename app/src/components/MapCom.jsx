@@ -3,10 +3,12 @@ import "../style/app1/map-com.css";
 import Button from "./Button";
 import MapPanel from "./MapPanel.jsx";
 import { parseKml } from "../utils/parseKml";
-import { useGraphStore, useKmlDataStore, useMapInfoStore, useVisibilityStore } from "../stores/appStore";
+import mapboxgl from 'mapbox-gl';
+import { useGraphStore, useKmlDataStore, useMapInfoStore, useMapStore, useVisibilityStore } from "../stores/appStore";
 import ImportComponent from "./ImportComponent";
 import { createGraph, createLinesPoint } from "../utils/calc";
 import TraitingInfo from "./TraitingInfo";
+import DownloadWindow from "./downloadWindow";
 
 export default function MapCom() {
 
@@ -17,12 +19,15 @@ export default function MapCom() {
     setImportMarkers,
     setImportLineStrings,
     startingMarker,
-    endingMarker
+    endingMarker,
+    setResultLineStrings,
+    resultLineStrings
   } = useMapInfoStore();
+  const map = useMapStore();
   const { exportBox, exportBoxToggle } = useVisibilityStore();
   const { setKmlData } = useKmlDataStore();
   const graphStore = useGraphStore();
-
+  const { downloadWindow, downloadWindowToggle } = useVisibilityStore();
   const importClick = () => {
     inputFileRef.current.click();
   }
@@ -75,41 +80,84 @@ export default function MapCom() {
   }
 
   function trait() {
-    const { graph } = graphStore;
-    graph.display();
-    console.log(graph.dijkstra(startingMarker, endingMarker));
+    const { graph, setPath } = graphStore;
+    // graph.display();
+    const path = graph.dijkstra(startingMarker, endingMarker);
+    setPath(path);
+    const lineRes = [];
+    for (let i = 0; i < path.length - 1; i++) {
+      lineRes.push(graph.edgeDef.get([path[i], path[i + 1]].sort().join()));
+    }
+    setResultLineStrings(lineRes);
   }
+
+  function boundResult() {
+    if (resultLineStrings)
+      console.log(resultLineStrings);
+    if (!resultLineStrings || resultLineStrings.length === 0) {
+      console.error('no lineString to bound');
+      return;
+    }
+    let coordinates = [];
+    resultLineStrings.forEach(e => {
+      coordinates = [...coordinates, ...e];
+    });
+
+    // Create a 'LngLatBounds' with both corners at the first coordinate.
+    const bounds = new mapboxgl.LngLatBounds(
+      coordinates[0],
+      coordinates[0]
+    );
+
+    // Extend the 'LngLatBounds' to include every coordinate in the bounds result.
+    for (const coord of coordinates) {
+      bounds.extend(coord);
+    }
+
+    map.map.fitBounds(bounds, {
+      padding: 20
+    });
+  };
 
   return (
     <>
       <div className="map-section">
         <MapPanel> </MapPanel>
-      </div>
-      <TraitingInfo> </TraitingInfo>
-      <div className="ctr-section">
-        <Button click={importClick}> IMPORT
-          <input
-            ref={inputFileRef}
-            type='file'
-            style={{ display: "none" }}
-            accept='.kml'
-            onChange={fileChange} />
-        </Button>
-        
-        <Button theme="secondary" click={trait}>
-          TRAIT
-        </Button>
-        
-        <Button theme="secondary" click={() => {
-          exportBoxToggle();
-          console.log(exportBox);
+
+        {importLineStrings && importLineStrings.length != 0 &&
+          <div className="select-param">
+            <TraitingInfo />
+            <Button theme="secondary" click={trait}>
+              TRAIT
+            </Button>
+          </div>
         }
-        }>
-          EXPORT RESULT
-        </Button>
+
+        <div className="ctr-section">
+          <Button click={importClick}> IMPORT
+            <input
+              ref={inputFileRef}
+              type='file'
+              style={{ display: "none" }}
+              accept='.kml'
+              onChange={fileChange} />
+          </Button>
 
 
-        <ImportComponent> </ImportComponent>
+
+          <Button theme="secondary" click={() => {
+            // exportBoxToggle();
+            boundResult();
+            downloadWindowToggle();
+            console.log(exportBox);
+          }
+          }>
+            EXPORT RESULT
+          </Button>
+          <DownloadWindow />
+          {/* <ImportComponent> </ImportComponent> */}
+        </div>
+
       </div>
     </>
   )

@@ -1,21 +1,47 @@
 .map-section {
     display: flex;
+    position: relative;
     justify-content: center;
-    padding-top: 2rem;
+    /* padding-top: 2rem; */
+    /* padding-top: 2rem; */
+    height: 100%;
 }
 
 .traiting-info {
   display: flex;
   flex-direction: row;
+  font-size: 2rem;
   /* background-color: white; */
   justify-content: center;
-  width: 100%;
+  /* width: 100% ; */
+  .demo-simple-select-label{
+    font-size: 1rem;
+  }
 }
 
 .ctr-section {
   /* margin-top: 4rem; */
   display: flex;
+  position: absolute;
+  bottom: 10px;
+  /* background-color: black;  */
   justify-content: center;
   gap: 5rem;
-  position: relative;
+  min-width: 100%;
+}
+
+.select-param {
+  display: flex;
+  position: absolute;
+  background-color: rgba(100, 100, 100, 0.3); 
+  min-height: 50px;
+  top:0;
+  align-content: center;
+  justify-content: center;
+  gap: 2rem;
+  width: 100%;
+  & .button {
+    margin-top: 10px;
+    height: 2.5rem;
+  }
 }

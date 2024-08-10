@@ -7,7 +7,7 @@ import { useMapInfoStore } from '../stores/appStore';
 
 export default function TraitingInfo() {
   // const [age, setAge] = useState(0);
-  const { 
+  const {
     importMarkers,
     startingMarker,
     endingMarker,
@@ -18,34 +18,40 @@ export default function TraitingInfo() {
   return (
     <div className="traiting-info">
       <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel id="demo-simple-select-label">starting point</InputLabel>
+        <InputLabel
+          id="demo-simple-select-label" sx={{ fontSize: '1.2rem', fontWeight: 700 }}  >
+          starting point
+        </InputLabel>
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
           value={startingMarker ? startingMarker : 'none'}
           label="starting point"
-          onChange={(e) => { setStartingMarker(e.target.value)}}
+          onChange={(e) => { setStartingMarker(e.target.value) }}
         >
           {importMarkers && importMarkers.length != 0 && importMarkers.map(m => {
             return <MenuItem key={`starting-${m.name}-${m.long}`} value={m.name}> {m.name} </MenuItem>
           })}
         </Select>
       </FormControl>
-      
+
       <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel id="demo-simple-select-label">ending point</InputLabel>
+        <InputLabel
+          id="demo-simple-select-label"
+          sx={{ fontSize: '1.2rem', fontWeight: 700 }}>
+          ending point</InputLabel>
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
           value={endingMarker ? endingMarker : 'none'}
           label="ending point"
-          onChange={(e) => {setEndingMarker(e.target.value)}}
+          onChange={(e) => { setEndingMarker(e.target.value) }}
         >
           {importMarkers && importMarkers.length != 0 && importMarkers.map(m => {
             return <MenuItem key={`ending-${m.name}-${m.long}`} value={m.name}> {m.name} </MenuItem>
           })}
         </Select>
       </FormControl>
-    </div>
+    </div >
   )
 }

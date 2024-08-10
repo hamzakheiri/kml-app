@@ -2,6 +2,7 @@ export class WeightedGraph {
  constructor() {
     this.adjacencyList = new Map();
     this.source = new Map();
+    this.edgeDef = new Map();
   }
 
   addVertex(vertex) {
@@ -9,7 +10,10 @@ export class WeightedGraph {
       this.adjacencyList.set(vertex, []);
     }
   }
-
+  
+  addEdgeDef(a, b, edgeDef){
+     this.edgeDef.set([a, b].sort().join(), edgeDef);
+  }
   addEdge(vertex1, vertex2, weight, source) {
     if (!this.adjacencyList.has(vertex1) || !this.adjacencyList.has(vertex2)) {
       throw new Error('Vertex does not exist.');

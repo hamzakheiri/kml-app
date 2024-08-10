@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import mapboxgl from 'mapbox-gl';
 import '../style/app1/mapbox-gl.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import {v4} from 'uuid';
 import { useGraphStore, useMapInfoStore, useMapStore } from '../stores/appStore';
 mapboxgl.accessToken = 'pk.eyJ1Ijoia2hlaXJpaGFtemEiLCJhIjoiY2x2ZmU0N2NkMDY4MjJxcW01bXdzaTZyaCJ9.C2imyFkjTQoSgDpdZ-D_BA'; // Replace with your access token
 
@@ -10,7 +11,8 @@ const Map = () => {
   const {
     importMarkers,
     resultMarkers,
-    importLineStrings
+    importLineStrings,
+    resultLineStrings,
   } = useMapInfoStore();
   const { 
     map,
@@ -18,6 +20,7 @@ const Map = () => {
     markers,
     addLineString,
     addMarkers,
+    lineStringsId,
   } = useMapStore();
   const graph = useGraphStore();
   
@@ -72,6 +75,61 @@ const Map = () => {
 
     graph.graph.display();
   })
+
+  useEffect(() => {
+    // console.log('map panel::', resultLineStrings);
+    if (!resultLineStrings || resultLineStrings.length === 0 || !map)
+      return;
+
+    function addStringLine(lineString) {
+      const lineStringCoordinates = lineString.coordinates.map(c => {
+        return [parseFloat(c[0]), parseFloat(c[1])];
+      })
+
+      const lineStringId = `${lineString.name}`;
+      if (lineStringsId.includes(lineStringId))
+        console.error('duplicated line string recourse');
+
+      addLineString(lineStringId); // later
+
+      map.addSource(`source-${lineString.name}`, {
+        type: 'geojson',
+        data: {
+          type: 'Feature',
+          properties: {},
+          geometry: {
+            type: 'LineString',
+            coordinates: lineStringCoordinates
+          }
+        }
+      });
+
+      map.addLayer({
+        id: `layer-${lineString.name}`,
+        type: 'line',
+        source: `source-${lineString.name}`,
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round',
+          
+        },
+        paint: {
+          'line-color': '#00cc00', // Blue color
+          'line-width': 2
+        }
+      });
+    }
+
+    const w = resultLineStrings.map(e => ({
+      name: `${v4()}`,
+      coordinates: e,
+    }))
+    w.forEach(addStringLine);
+    // addStringLine(w[2]);
+  }, [resultLineStrings, map])
+
+
+
   useEffect(() => {
     if (!importLineStrings || importLineStrings.length === 0 || !map)
       return;
@@ -102,7 +160,7 @@ const Map = () => {
           'line-cap': 'round'
         },
         paint: {
-          'line-color': `${getRandomColor()}`, // Blue color
+          'line-color': `#cc0000`, // Blue color
           'line-width': 2
         }
       });
@@ -116,7 +174,7 @@ const Map = () => {
 
   return (
     <>
-      <div ref={mapContainerRef} style={{ width: '80%', height: '500px', }} />
+      <div className="map-thing" ref={mapContainerRef} style={{ width: '100%', height: '100%', }} />
     </>
   )
 };
