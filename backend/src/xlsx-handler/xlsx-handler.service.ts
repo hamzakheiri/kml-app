@@ -42,13 +42,42 @@ export class XlsxHandlerService {
     return buf;
   }
 
+
+  colorCells(worksheet, starting, ending, color, bgcolor) {
+    const startCell = worksheet.getCell(starting);
+    const endCell = worksheet.getCell(ending);
+
+    // Iterate over the rows and columns in the range
+    // console.log('start row: ', startCell.row, 'end row', endCell.row)
+    for (let row = startCell.row; row <= endCell.row; row++) {
+      for (let col = startCell.col; col <= endCell.col; col++) {
+        let cell = worksheet.getRow(row).getCell(col);
+
+        // Set background color (fill color)
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: bgcolor }  // Orange background color
+        };
+
+        // Set font color
+        cell.font = {
+          color: { argb: color }  // Blue font color
+        };
+      }
+    }
+  }
+
+
   async createExcelJs(file: Express.Multer.File, body: any) {
     const { title, fileName, date } = body;
     const aoa = [];
     const aoaRes = body.aoa.split(',');
+    
+    console.log('aoa:', aoaRes);
     // console.log('aoa', body.aoa, 'saoa', aoa,);
 
-    for (let i = 0; i < 7 * 3; i += 7) {
+    for (let i = 0; i < aoaRes.length; i += 7) {
       aoa.push(aoaRes.slice(i, i + 7));
     }
 
@@ -57,6 +86,18 @@ export class XlsxHandlerService {
     const sheet = workbook.addWorksheet('Sheet1');
 
     // Setting the title and merging the cells
+    sheet.columns = [
+      { key: 'A', width: 25 },
+      { key: 'B', width: 25 },
+      { key: 'C', width: 25 },
+      { key: 'D', width: 25 },
+      { key: 'E', width: 25 },
+      { key: 'F', width: 25 },
+      { key: 'G', width: 25 },
+    ];
+
+    
+
     sheet.getCell('A1').value = title;
     sheet.mergeCells('A1:G1');
 
@@ -72,16 +113,27 @@ export class XlsxHandlerService {
       sheet.addRow(row);
     })
 
+    const length = aoa.length;
+    sheet.getCell('A1').alignment = {
+      vertical: 'middle',
+      horizontal: 'center'
+    }
+
+    this.colorCells(sheet, 'A3', 'G3', '000000', 'CC0099');
+    this.colorCells(sheet, 'A1', 'G1', 'FFFFFF', 'CC0099');
+    this.colorCells(sheet, 'A4', 'C4', '000000', '92D050');
+    this.colorCells(sheet, `E${3+length}`, `G${3+length}`, '000000', '92D050');
+    
     const image = workbook.addImage({
       buffer: file.buffer,
-      extension: 'png', // Or the appropriate extension for your image
+      extension: 'png',
     });
-
+    
     // Add image to sheeti
     const sheet2 = workbook.addWorksheet('sheet2');
     sheet2.addImage(image, {
       tl: { col: 1, row: 1 }, // Top-left corner position
-      ext: { width: 500, height: 500  }, // Set image dimensions (optional)
+      ext: { width: 500, height: 500 }, // Set image dimensions (optional)
     });
 
     try {
@@ -94,7 +146,7 @@ export class XlsxHandlerService {
     try {
       const buffer = workbook.xlsx.writeBuffer();
       return buffer;
-    } catch(e) {
+    } catch (e) {
       console.error(e);
       throw new BadRequestException('bad request');
     }

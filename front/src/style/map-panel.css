@@ -6,6 +6,11 @@
   display: none;
 }
 
+.map-thing{
+  height: 100%;
+  width: 100%;
+}
+
 a.mapboxgl-ctrl-logo {
   display: none !important; 
 }

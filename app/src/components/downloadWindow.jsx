@@ -55,6 +55,7 @@ export default function DownloadWindow() {
     const formData = new FormData();
     formData.append('file', blob, `map_screenshot${v4()}.png`);
     formData.append('aoa', aoa);
+    // console.log('hello', aoa)
     formData.append('title', title);
     const d = `${date.$D}-${date.month() + 1}-${date.year()}`;
     formData.append('date', d);

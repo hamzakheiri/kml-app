@@ -84,6 +84,7 @@ export default function MapCom() {
     // graph.display();
     const path = graph.dijkstra(startingMarker, endingMarker);
     setPath(path);
+    console.log(path);
     const lineRes = [];
     for (let i = 0; i < path.length - 1; i++) {
       lineRes.push(graph.edgeDef.get([path[i], path[i + 1]].sort().join()));
